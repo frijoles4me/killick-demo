@@ -1,30 +1,28 @@
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import { routerReducer, routerMiddleware } from "react-router-redux";
 import { promiseMiddleware } from "./middleware";
 
-const defaultState = {
-  appName: "Killick",
-  articles: null
-};
+import createHistory from "history/createBrowserHistory";
 
-const reducer = function(state = defaultState, action) {
-  console.log(action.type, action.payload);
-  switch (action.type) {
-    case "HOME_PAGE_LOADED":
-      return action.error
-        ? state
-        : {
-            ...state,
-            articles: action.payload.articles
-          };
-    default:
-      return state;
-  }
-};
+import auth from "./reducers/auth";
+import common from "./reducers/common";
+import home from "./reducers/home";
+//init browser history API
+export const history = createHistory();
+
+// Build the middleware for intercepting and dispatching navigation actions
+const myRouterMiddleware = routerMiddleware(history);
+
+const reducer = combineReducers({
+  auth,
+  common,
+  home,
+  router: routerReducer
+});
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const reduxStore = createStore(
-  reducer,
-  composeEnhancers(applyMiddleware(promiseMiddleware))
-);
 
-export default reduxStore;
+export const reduxStore = createStore(
+  reducer,
+  composeEnhancers(applyMiddleware(myRouterMiddleware, promiseMiddleware))
+);

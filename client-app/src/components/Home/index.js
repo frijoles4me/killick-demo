@@ -6,8 +6,8 @@ import Banner from "./Banner";
 import services from "../../services";
 
 const mapStateToProps = state => ({
-  appName: state.appName,
-  articles: state.articles
+  appName: state.common.appName,
+  articles: state.home.articles
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -18,13 +18,14 @@ class Home extends Component {
   componentDidMount() {
     this.props.onLoad(services.Articles.all());
   }
+
   render() {
     return (
       <div className="home-page">
         <Banner appName={this.props.appName} />
         <div className="container page">
           <div className="row">
-            <MainView />
+            <MainView articles={this.props.articles} />
             <div className="col-md-3">
               <div className="sidebar">
                 <p>Popular Tags</p>
