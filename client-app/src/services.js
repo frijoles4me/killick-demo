@@ -27,7 +27,9 @@ const Articles = {
 };
 
 const Comments = {
-  forArticle: slug => requests.get(`/articles/${slug}/comments`)
+  forArticle: slug => requests.get(`/articles/${slug}/comments`),
+  create: (slug, body) =>
+    requests.post(`articles/${slug}/comments`, { comment: body })
 };
 
 const Auth = {
